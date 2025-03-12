@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Keranjang Saya - SayurFresh</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .cart-table {
+            width: 100%;
+            margin-top: 20px;
+        }
+        .cart-table th, .cart-table td {
+            text-align: center;
+            padding: 10px;
+        }
+        .btn-cancel {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+        }
+        .btn-cancel:hover {
+            background-color: #c82333;
+        }
+        .btn-back {
+            background-color: #007bff;
+            color: white;
+            border: none;
+        }
+        .btn-back:hover {
+            background-color: #0056b3;
+        }
+        .user-info-box {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <!-- Informasi Pengguna -->
+        <div class="user-info-box">
+            <p><strong>Nama Pengguna: </strong><span id="userName"></span></p>
+            <p><strong>Email: </strong><span id="userEmail"></span></p>
+        </div>
+
+        <h2>Keranjang Saya</h2>
+<!-- Tabel Keranjang -->
+<table class="table table-bordered cart-table">
+    <thead>
+        <tr>
+            <th>No</th>
+            <th>Nama Pemesan</th>
+            <th>Nama Produk</th>
+            <th>Kuantitas (kg)</th>
+            <th>Harga per Barang</th>
+            <th>Total Harga</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody id="cartItems">
+        <!-- Data item keranjang akan muncul di sini -->
+    </tbody>
+    <!-- Baris Total -->
+    <tfoot>
+        <tr>
+            <td colspan="5" class="text-right"><strong>Total:</strong></td>
+            <td>Rp <span id="totalAmount">0</span></td>
+            <td></td>
+        </tr>
+    </tfoot>
+</table>
+
+<div class="mt-4">
+    <button id="checkoutBtn" class="btn btn-success">Lanjutkan Pembayaran</button>
+    <button id="backBtn" class="btn btn-secondary ml-3">Kembali ke Halaman Utama</button>
+</div>
+
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+    <script>
+        // Inisialisasi Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBrc8_nPdvVoJg99Fsi80NZLnt8LiBN3EI",
+            authDomain: "kutanifarm.firebaseapp.com",
+            projectId: "kutanifarm",
+            storageBucket: "kutanifarm.appspot.com",
+            messagingSenderId: "1063275158126",
+            appId: "1:1063275158126:web:8af2bc74da9db5c8e3a47f",
+            measurementId: "G-Z3TGPQJW2V",
+        };
+
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // Fungsi untuk menampilkan data keranjang
+        async function loadCart(user) {
+            const cartRef = db.collection("carts").doc(user.uid);
+            const cartDoc = await cartRef.get();
+
+            if (cartDoc.exists) {
+                const cartItems = cartDoc.data().items;
+                let totalAmount = 0;
+
+                const cartItemsContainer = document.getElementById("cartItems");
+                cartItemsContainer.innerHTML = ""; // Clear previous items
+
+                cartItems.forEach((item, index) => {
+                    totalAmount += item.totalPrice;
+                    cartItemsContainer.innerHTML += `
+                        <tr id="item-${item.productId}">
+                            <td>${index + 1}</td>
+                            <td>${item.userName}</td>
+                            <td>${item.productName}</td>
+                            <td>${item.quantity}</td>
+                            <td>Rp ${item.productPrice}</td>
+                            <td>Rp ${item.totalPrice}</td>
+                            <td>
+                                <button class="btn btn-cancel" onclick="cancelOrder('${user.uid}', '${item.productId}')">Batal Pesanan</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                document.getElementById("totalAmount").textContent = totalAmount;
+            } else {
+                document.getElementById("cartItems").innerHTML = "<tr><td colspan='7' class='text-center'>Keranjang Anda kosong.</td></tr>";
+            }
+        }
+
+        // Fungsi untuk membatalkan pesanan dan menghapus produk dari Firestore
+        async function cancelOrder(userId, productId) {
+            const cartRef = db.collection("carts").doc(userId);
+            const cartDoc = await cartRef.get();
+
+            if (cartDoc.exists) {
+                let cartItems = cartDoc.data().items;
+
+                // Hapus item berdasarkan productId
+                const updatedCartItems = cartItems.filter(item => item.productId !== productId);
+
+                // Update data keranjang di Firestore
+                await cartRef.update({
+                    items: updatedCartItems
+                });
+
+                // Hapus baris yang terkait dengan item yang dibatalkan dari tampilan
+                const itemRow = document.getElementById(`item-${productId}`);
+                if (itemRow) {
+                    itemRow.remove();
+                }
+
+                // Update total amount setelah penghapusan
+                let newTotalAmount = updatedCartItems.reduce((total, item) => total + item.totalPrice, 0);
+                document.getElementById("totalAmount").textContent = newTotalAmount;
+
+                alert("Pesanan berhasil dibatalkan.");
+            }
+        }
+
+        // Menangani status login
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // Tampilkan informasi pengguna
+                document.getElementById("userName").textContent = user.displayName || "Tidak Ada Nama";
+                document.getElementById("userEmail").textContent = user.email;
+
+                // Jika user sudah login, tampilkan data keranjang
+                loadCart(user);
+            } else {
+                // Jika tidak ada user yang login, arahkan ke halaman login
+                alert("Anda harus login terlebih dahulu.");
+                window.location.href = '/Administrator/login.html';  // Redirect to login page
+            }
+        });
+
+        // Lanjutkan ke halaman pembayaran
+        document.getElementById("checkoutBtn").addEventListener("click", () => {
+            window.location.href = "/checkout.html"; // Halaman pembayaran
+        });
+
+        // Tombol kembali ke halaman utama
+        document.getElementById("backBtn").addEventListener("click", () => {
+            window.location.href = "/index.html"; // Halaman utama
+        });
+
+    </script>
+</body>
+</html>

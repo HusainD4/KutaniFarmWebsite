@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Manage Products</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            background-color: #343a40;
+            color: white;
+            padding-top: 20px;
+        }
+        .sidebar .nav-link {
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+        }
+        .sidebar .nav-link:hover {
+            background-color: #575d63;
+        }
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        .table th, .table td {
+            vertical-align: middle;
+        }
+        .btn-sm {
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="sidebar-header text-center">
+            <h2>Admin Dashboard</h2>
+        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item"><a href="#" class="nav-link" id="manageProductsLink">Manage Produk</a></li>
+            <li class="nav-item"><a href="#" class="nav-link" id="transactionsLink">Transaksi</a></li>
+            <li class="nav-item"><a href="#" class="nav-link" id="logoutLink">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <!-- Manage Produk Section -->
+        <div id="manageProductSection">
+            <h3>Manage Produk</h3>
+
+            <!-- Form Tambah Produk -->
+            <div class="card mb-4">
+                <div class="card-header"><h4>Tambah Produk</h4></div>
+                <div class="card-body">
+                    <form id="addProductForm">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" id="productName" placeholder="Nama Produk" required>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" id="productDescription" placeholder="Deskripsi" required>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="number" class="form-control" id="productPrice" placeholder="Harga" required>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="number" class="form-control" id="productStock" placeholder="Stok" required>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-success w-100">Tambah</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Form Edit Produk -->
+            <div class="card mb-4" id="editProductCard" style="display: none;">
+                <div class="card-header"><h4>Edit Produk</h4></div>
+                <div class="card-body">
+                    <form id="editProductForm">
+                        <input type="hidden" id="productId">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" id="editProductName" placeholder="Nama Produk" required>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" id="editProductDescription" placeholder="Deskripsi" required>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="number" class="form-control" id="editProductPrice" placeholder="Harga" required>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="number" class="form-control" id="editProductStock" placeholder="Stok" required>
+                            </div>
+                            <div class="col-md-1">
+                                <button type="submit" class="btn btn-warning w-100">Update</button>
+                            </div>
+                            <div class="col-md-1">
+                                <button type="button" class="btn btn-secondary w-100" id="cancelEditBtn">Cancel</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Pencarian Produk -->
+            <input type="text" id="searchProductInput" class="form-control mb-3" placeholder="Cari produk...">
+
+            <!-- Daftar Produk -->
+            <table class="table table-bordered">
+                <thead>
+                    <tr><th>Nama</th><th>Deskripsi</th><th>Harga</th><th>Stok</th><th>Aksi</th></tr>
+                </thead>
+                <tbody id="productTable"></tbody>
+            </table>
+        </div>
+
+        <!-- Transactions Section -->
+        <div id="transactionsSection">
+            <h3>Transaksi</h3>
+            <!-- Tabel Transaksi -->
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID Transaksi</th>
+                        <th>Nama Transaksi</th>
+                        <th>Nama Barang</th>
+                        <th>Tanggal Beli</th>
+                        <th>Nama Pelanggan</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionsTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Firebase & JavaScript -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBrc8_nPdvVoJg99Fsi80NZLnt8LiBN3EI",
+            authDomain: "kutanifarm.firebaseapp.com",
+            projectId: "kutanifarm",
+            storageBucket: "kutanifarm.appspot.com",
+            messagingSenderId: "1063275158126",
+            appId: "1:1063275158126:web:8af2bc74da9db5c8e3a47f",
+            measurementId: "G-Z3TGPQJW2V"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const addProductForm = document.getElementById("addProductForm");
+        const editProductForm = document.getElementById("editProductForm");
+        const cancelEditBtn = document.getElementById("cancelEditBtn");
+        const productTable = document.getElementById("productTable");
+        const searchProductInput = document.getElementById("searchProductInput");
+        const editProductCard = document.getElementById("editProductCard");
+        const addProductCard = document.getElementById("addProductForm");
+
+        let editingProductId = null;
+
+        // Switch between sections
+        const manageProductsLink = document.getElementById("manageProductsLink");
+        const transactionsLink = document.getElementById("transactionsLink");
+
+        manageProductsLink.addEventListener("click", function () {
+            document.getElementById("manageProductSection").style.display = "block";
+            document.getElementById("transactionsSection").style.display = "none";
+            loadProducts();
+        });
+
+        transactionsLink.addEventListener("click", function () {
+            document.getElementById("manageProductSection").style.display = "none";
+            document.getElementById("transactionsSection").style.display = "block";
+            loadTransactions();
+        });
+
+        // Load products
+        async function loadProducts() {
+            const querySnapshot = await getDocs(collection(db, "products"));
+            productTable.innerHTML = "";
+            querySnapshot.forEach((docSnapshot) => {
+                const product = docSnapshot.data();
+                const row = productTable.insertRow();
+                row.innerHTML = `
+                    <td>${product.name}</td>
+                    <td>${product.description}</td>
+                    <td>Rp ${product.price.toFixed(2)}</td>
+                    <td>${product.stock}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick="editProduct('${docSnapshot.id}')">Edit</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteProduct('${docSnapshot.id}')">Hapus</button>
+                    </td>
+                `;
+            });
+        }
+
+        // Edit product
+        window.editProduct = async (id) => {
+            const productDoc = await getDoc(doc(db, "products", id));
+            if (productDoc.exists()) {
+                const product = productDoc.data();
+                document.getElementById("editProductName").value = product.name;
+                document.getElementById("editProductDescription").value = product.description;
+                document.getElementById("editProductPrice").value = product.price;
+                document.getElementById("editProductStock").value = product.stock;
+
+                editingProductId = id;
+                editProductCard.style.display = "block";
+                addProductCard.style.display = "none";
+            }
+        };
+
+        // Cancel edit
+        cancelEditBtn.addEventListener("click", () => {
+            addProductCard.style.display = "block";
+            editProductCard.style.display = "none";
+            editProductForm.reset(); // Reset form fields when cancel is clicked
+        });
+
+        // Delete product
+        window.deleteProduct = async (id) => {
+            await deleteDoc(doc(db, "products", id));
+            alert("Produk dihapus!");
+            loadProducts();
+        };
+
+        // Add product
+        addProductForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const name = document.getElementById("productName").value;
+            const description = document.getElementById("productDescription").value;
+            const price = parseFloat(document.getElementById("productPrice").value);
+            const stock = parseInt(document.getElementById("productStock").value);
+
+            await addDoc(collection(db, "products"), { name, description, price, stock });
+            alert("Produk berhasil ditambahkan!");
+            addProductForm.reset();
+            loadProducts();
+        });
+
+        // Update product
+        editProductForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const name = document.getElementById("editProductName").value;
+            const description = document.getElementById("editProductDescription").value;
+            const price = parseFloat(document.getElementById("editProductPrice").value);
+            const stock = parseInt(document.getElementById("editProductStock").value);
+
+            await updateDoc(doc(db, "products", editingProductId), { name, description, price, stock });
+            alert("Produk berhasil diperbarui!");
+            editingProductId = null;
+            addProductCard.style.display = "block";
+            editProductCard.style.display = "none";
+            loadProducts();
+        });
+
+        // Load transactions
+        async function loadTransactions() {
+            const querySnapshot = await getDocs(collection(db, "transactions"));
+            transactionsTable.innerHTML = "";
+            querySnapshot.forEach((docSnapshot) => {
+                const transaction = docSnapshot.data();
+                const row = transactionsTable.insertRow();
+                row.innerHTML = `
+                    <td>${docSnapshot.id}</td>
+                    <td>${transaction.transactionName}</td>
+                    <td>${transaction.productName}</td>
+                    <td>${transaction.purchaseDate}</td>
+                    <td>${transaction.customerName}</td>
+                    <td>${transaction.status}</td>
+                    <td>
+                        <button class="btn btn-success btn-sm" onclick="updateTransactionStatus('${docSnapshot.id}', 'Sukses')">Sukses</button>
+                        <button class="btn btn-danger btn-sm" onclick="updateTransactionStatus('${docSnapshot.id}', 'Failed')">Failed</button>
+                        <button class="btn btn-warning btn-sm" onclick="updateTransactionStatus('${docSnapshot.id}', 'Pending')">Pending</button>
+                    </td>
+                `;
+            });
+        }
+
+        // Update transaction status
+        window.updateTransactionStatus = async (id, status) => {
+            await updateDoc(doc(db, "transactions", id), { status });
+            alert(`Status transaksi diperbarui menjadi ${status}`);
+            loadTransactions();
+        };
+
+        // Initial load
+        loadProducts();
+    </script>
+</body>
+</html>

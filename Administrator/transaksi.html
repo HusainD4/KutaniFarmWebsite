@@ -1,0 +1,53 @@
+<!-- Tambahkan tabel transaksi setelah tabel produk -->
+<h3>Daftar Transaksi</h3>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID Transaksi</th>
+            <th>Nama Transaksi</th>
+            <th>Nama Barang</th>
+            <th>Tanggal Beli</th>
+            <th>Nama Pelanggan</th>
+            <th>Status</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody id="transactionTable"></tbody>
+</table>
+
+<script type="module">
+    import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+    
+    const db = getFirestore();
+    const transactionTable = document.getElementById("transactionTable");
+    
+    async function loadTransactions() {
+        transactionTable.innerHTML = "";
+        const querySnapshot = await getDocs(collection(db, "transactions"));
+        querySnapshot.forEach((docSnapshot) => {
+            const transaction = docSnapshot.data();
+            const row = transactionTable.insertRow();
+            row.innerHTML = `
+                <td>${docSnapshot.id}</td>
+                <td>${transaction.transactionName}</td>
+                <td>${transaction.productName}</td>
+                <td>${transaction.purchaseDate}</td>
+                <td>${transaction.customerName}</td>
+                <td id="status-${docSnapshot.id}">${transaction.status}</td>
+                <td>
+                    <button class="btn btn-success btn-sm" onclick="updateTransactionStatus('${docSnapshot.id}', 'Sukses')">Sukses</button>
+                    <button class="btn btn-danger btn-sm" onclick="updateTransactionStatus('${docSnapshot.id}', 'Failed')">Failed</button>
+                    <button class="btn btn-warning btn-sm" onclick="updateTransactionStatus('${docSnapshot.id}', 'Pending')">Pending</button>
+                </td>
+            `;
+        });
+    }
+
+    window.updateTransactionStatus = async (id, status) => {
+        await updateDoc(doc(db, "transactions", id), { status });
+        document.getElementById(`status-${id}`).innerText = status;
+        alert(`Status transaksi diperbarui menjadi ${status}`);
+    };
+
+    loadTransactions();
+</script>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kutani Farm - E-Commerce</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/StylesWebsite.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <!-- Firebase SDK (Modular Version) -->
+    <script type="module">
+      // Import Firebase SDK
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+      import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyBrc8_nPdvVoJg99Fsi80NZLnt8LiBN3EI",
+        authDomain: "kutanifarm.firebaseapp.com",
+        projectId: "kutanifarm",
+        storageBucket: "kutanifarm.appspot.com",
+        messagingSenderId: "1063275158126",
+        appId: "1:1063275158126:web:8af2bc74da9db5c8e3a47f",
+        measurementId: "G-Z3TGPQJW2V"
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      // Function to fetch products from Firestore
+      async function fetchProducts() {
+        const productsCollection = collection(db, 'products');
+        const productsSnapshot = await getDocs(productsCollection);
+        const productsList = productsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        displayProducts(productsList);
+      }
+
+      // Display products in the product section
+      function displayProducts(products) {
+        const productContainer = document.getElementById('product-section');
+        productContainer.innerHTML = '';  // Clear existing products
+        products.forEach(product => {
+          const productElement = `
+            <div class="product">
+              <img src="${product.imageUrl}" alt="${product.name}">
+              <h3>${product.name}</h3>
+              <p>${product.description}</p>
+              <p class="price">Rp ${product.price}</p>
+              <button onclick="addToCart('${product.id}', '${product.name}', ${product.price})">Add to Cart</button>
+            </div>
+          `;
+          productContainer.innerHTML += productElement;
+        });
+      }
+
+      // Function to add product to Firestore "cart"
+      async function addToCart(productId, productName, productPrice) {
+        const userCartCollection = collection(db, 'cart');
+        try {
+          await addDoc(userCartCollection, {
+            productId,
+            name: productName,
+            price: productPrice,
+            quantity: 1
+          });
+          alert("Product added to cart!");
+        } catch (error) {
+          console.error("Error adding product to cart:", error);
+        }
+      }
+
+      // Fetch products when the page loads
+      fetchProducts();
+    </script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="bg-white py-3">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div class="logo">
+                <a href="/public/HomePage.html">
+                    <img src="/assets/images/LogoKutaniFarm.png" alt="Kutani Farm Logo" style="height: 50px;">
+                </a>
+            </div>
+            <div class="search-bar d-flex ms-auto">
+                <input type="text" class="form-control" placeholder="Search products..." aria-label="Search">
+                <button class="btn btn-success ms-2">Search</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-home"></i> Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-store"></i> Shop</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-list"></i> Categories</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-envelope"></i> Contact</a></li>
+                    <li class="nav-item dropdown" style="padding-right:100px;">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user"></i> Profile
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="#">Profile Detail</a></li>
+                            <li><a class="dropdown-item" href="cart.html">Cart</a></li>
+                            <li><a class="dropdown-item" href="#">Transaction Details</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Product Section -->
+    <div class="container" id="product-section">
+        <!-- Products will be dynamically loaded here -->
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white text-center py-3">
+        <p>&copy; 2025 Kutani Farm. All rights reserved.</p>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

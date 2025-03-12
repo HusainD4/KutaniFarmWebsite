@@ -1,0 +1,158 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header */
+header {
+    background-color: #fff;
+    padding: 10px 20px;
+}
+
+header .logo a {
+    display: flex;
+    align-items: center;
+}
+
+header .logo img {
+    height: 50px;
+}
+
+/* Navbar */
+nav {
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+}
+
+.navbar-nav {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.nav-item {
+    margin-left: 20px;
+}
+
+.nav-link {
+    font-size: 16px;
+    color: #34495e;
+    text-decoration: none;
+}
+
+.nav-link:hover {
+    color: #28a745;
+}
+
+.dropdown-menu {
+    background-color: #fff;
+    border: none;
+}
+
+.dropdown-item {
+    color: #34495e;
+    text-decoration: none;
+}
+
+.dropdown-item:hover {
+    color: #28a745;
+}
+
+/* Contact Information Section */
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h3 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+hr {
+    border-top: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 18px;
+    color: #34495e;
+}
+
+a {
+    color: #28a745;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+ul {
+    font-size: 18px;
+    color: #34495e;
+    list-style-type: none;
+    padding-left: 0;
+}
+
+ul li {
+    margin-bottom: 8px;
+}
+
+/* Footer */
+footer {
+    background-color: #f8f9fa;
+    padding: 20px;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 16px;
+    color: #34495e;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 768px) {
+    nav .navbar-nav {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .nav-item {
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+
+    .container {
+        margin: 20px;
+    }
+}
+
+
+/* Font Awesome Icon Styles */
+i {
+    margin-right: 8px;
+    color: #28a745;
+}
+
+.fab, .fas {
+    font-size: 20px; /* Set the icon size */
+}
+
+i:hover {
+    color: #2c3e50; /* Change icon color on hover */
+}
+
+
+        /* Ketika mouse hover pada dropdown induk, tampilkan dropdown */
+        .navbar .dropdown:hover .dropdown-menu {
+            display: block; 
+        }

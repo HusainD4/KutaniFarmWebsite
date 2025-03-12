@@ -1,0 +1,225 @@
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Firebase Firestore and Authentication</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+        <link rel="stylesheet" href="/assets/css/StyleesAdminLogin.css" />
+        <style>
+            /* Styles for the notification */
+            #notification {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                padding: 15px 30px;
+                border-radius: 5px;
+                color: white;
+                font-weight: bold;
+                font-size: 16px;
+                display: none;
+                z-index: 9999;
+            }
+
+            /* Different colors for different messages */
+            .success {
+                background-color: #28a745; /* Green */
+            }
+
+            .error {
+                background-color: #dc3545; /* Red */
+            }
+
+            .warning {
+                background-color: #ffc107; /* Yellow */
+            }
+
+            .notification-text {
+                margin: 0;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <!-- Notification container -->
+        <div id="notification">
+            <p class="notification-text" id="notification-text"></p>
+        </div>
+
+        <!-- Login & Sign Up Forms -->
+        <div class="container">
+            <div class="forms-container">
+                <div class="signin-signup">
+                    <!-- Sign In Form -->
+                    <form action="#" class="sign-in-form" id="signInForm">
+                        <h2 class="title">Sign in</h2>
+                        <div class="input-field">
+                            <i class="fas fa-user"></i>
+                            <input type="email" id="email" placeholder="Email" required />
+                        </div>
+                        <div class="input-field">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="password" placeholder="Password" required />
+                        </div>
+                        <input type="submit" value="Login" class="btn solid" />
+                    </form>
+
+                    <!-- Sign Up Form -->
+                    <form action="#" class="sign-up-form" id="signUpForm">
+                        <h2 class="title">Sign up</h2>
+                        <div class="input-field">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="signupUsername" placeholder="Username" required />
+                        </div>
+                        <div class="input-field">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="signupEmail" placeholder="Email" required />
+                        </div>
+                        <div class="input-field">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="signupPassword" placeholder="Password" required />
+                        </div>
+                        <input type="submit" value="Sign up" class="btn" />
+                    </form>
+                </div>
+            </div>
+
+            <!-- Panels -->
+            <div class="panels-container">
+                <div class="panel left-panel">
+                    <div class="content">
+                        <h3>New here ?</h3>
+                        <p>Sign up to start your journey with us!</p>
+                        <button class="btn transparent" id="sign-up-btn">Sign up</button>
+                    </div>
+                    <img src="/assets/images/log.svg" class="image" alt="" />
+                </div>
+                <div class="panel right-panel">
+                    <div class="content">
+                        <h3>One of us ?</h3>
+                        <p>Welcome back! Please log in to continue.</p>
+                        <button class="btn transparent" id="sign-in-btn">Sign in</button>
+                    </div>
+                    <img src="/assets/images/register.svg" class="image" alt="" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Firebase SDK & Script -->
+        <script type="module">
+            // Importing Firebase Modules
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+            import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+            import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+        
+            // Firebase Configuration
+            const firebaseConfig = {
+                apiKey: "AIzaSyBrc8_nPdvVoJg99Fsi80NZLnt8LiBN3EI",
+                authDomain: "kutanifarm.firebaseapp.com",
+                projectId: "kutanifarm",
+                storageBucket: "kutanifarm.appspot.com",
+                messagingSenderId: "1063275158126",
+                appId: "1:1063275158126:web:8af2bc74da9db5c8e3a47f",
+                measurementId: "G-Z3TGPQJW2V"
+            };
+        
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const db = getFirestore(app);
+        
+            // Show notification function
+            function showNotification(message, type) {
+                const notification = document.getElementById('notification');
+                const notificationText = document.getElementById('notification-text');
+        
+                notificationText.textContent = message;
+                notification.classList.remove('success', 'error', 'warning');
+                notification.classList.add(type);
+                notification.style.display = 'block';
+        
+                // Hide notification after 3 seconds
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 3000);
+            }
+        
+            // Sign-Up Function
+            async function signUp(email, password, username) {
+                try {
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const user = userCredential.user;
+        
+                    // Set username in Firestore and Firebase Auth profile
+                    await updateProfile(user, { displayName: username });
+        
+                    // Save username and email in Firestore
+                    await setDoc(doc(db, "users", user.uid), {
+                        username: username,
+                        email: email
+                    });
+        
+                    console.log("User signed up:", user);
+                    showNotification("Sign-up successful!", "success");
+                } catch (error) {
+                    console.error("Error signing up:", error.message);
+                    showNotification("Error: " + error.message, "error");
+                }
+            }
+        
+            // Sign-In Function
+            async function signIn(email, password) {
+                try {
+                    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                    const user = userCredential.user;
+                    console.log("User signed in:", user);
+        
+                    // Check if the user exists in Firestore
+                    const userDoc = await getDoc(doc(db, "users", user.uid));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+        
+                        // Redirect to homepage for regular users
+                        window.location.href = "/index.html"; // Redirect to home page for regular users
+                    } else {
+                        showNotification("Error: User not found in database.", "error");
+                    }
+                } catch (error) {
+                    console.error("Error signing in:", error.message);
+                    showNotification("Error: Invalid email or password.", "error");
+                }
+            }
+        
+            // Form Event Listeners for Login & SignUp
+            document.getElementById("signUpForm").addEventListener("submit", (e) => {
+                e.preventDefault();
+                const username = document.getElementById("signupUsername").value;
+                const email = document.getElementById("signupEmail").value;
+                const password = document.getElementById("signupPassword").value;
+                signUp(email, password, username);
+            });
+        
+            document.getElementById("signInForm").addEventListener("submit", (e) => {
+                e.preventDefault();
+                const email = document.getElementById("email").value;
+                const password = document.getElementById("password").value;
+                signIn(email, password);
+            });
+        
+            // Toggle between sign-up and sign-in forms
+            document.getElementById("sign-up-btn").addEventListener("click", () => {
+                document.querySelector(".signin-signup").classList.add("sign-up-mode");
+            });
+        
+            document.getElementById("sign-in-btn").addEventListener("click", () => {
+                document.querySelector(".signin-signup").classList.remove("sign-up-mode");
+            });
+        
+        </script>
+        <script src="app.js"></script>
+    </body>
+
+    </html>

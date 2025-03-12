@@ -1,0 +1,241 @@
+    /* Basic reset and styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #f4f4f4;
+}
+
+/* Notification Box Styling */
+.notification {
+    position: fixed;
+    top: 100px;
+    left: 74%;
+    transform: translateX(-50%);
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: none; /* Initially hidden */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    z-index: 1000;
+}
+
+/* Header styles */
+header {
+    background-color: #ffffff;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between; /* Spacing between logo and search bar */
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+header .logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #3e6d2b; /* Dark green color */
+}
+
+header .search-bar {
+    display: flex;
+    align-items: center; /* Vertically center the input and button */
+    justify-content: flex-end; /* Align the search bar to the right */
+    width: 50%;
+}
+
+header .search-bar input[type="text"] {
+    width: 80%;
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    margin-right: 10px;
+}
+
+header .search-bar button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+header .search-bar button:hover {
+    background-color: #218838;
+}
+
+/* Navigation Bar */
+.navbar {
+    display: flex;
+    justify-content: center;
+    background-color: #3e6d2b;
+    padding: 10px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-right: 10px;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    padding: 14px 20px;
+    display: block;
+    transition: background-color 0.3s ease;
+}
+
+.navbar a:hover {
+    background-color: #1b4908;
+}
+
+/* Navbar Item */
+.navbar .dropdown {
+    position: relative;
+}
+
+.navbar .dropdown a {
+    color: white;
+    text-decoration: none;
+    padding: 14px 20px;
+    display: block;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover efek untuk tautan Profile */
+.navbar .dropdown a:hover {
+    background-color: #1b4908;
+}
+
+/* Dropdown menu */
+.navbar .dropdown-menu {
+    background-color: #3e6d2b;
+    min-width: 200px;
+    padding: 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+}
+
+/* Ketika mouse hover pada dropdown induk, tampilkan dropdown */
+.navbar .dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+/* Item dalam dropdown */
+.navbar .dropdown-item {
+    padding: 12px 20px;
+    color: white;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover efek untuk item dropdown */
+.navbar .dropdown-item:hover {
+    background-color: #218838;
+}
+
+/* Product Section */
+.container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 products per row */
+    gap: 20px;
+    justify-items: center; /* Center the products */
+    margin: 20px;
+}
+
+.product {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    width: 200px; /* Adjusted for a medium size */
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.product:hover {
+    transform: translateY(-5px);
+}
+
+.product img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.product h3 {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.product p {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 10px;
+}
+
+.product .price {
+    font-size: 20px;
+    color: #28a745;
+    margin-bottom: 15px;
+}
+
+.product button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.product button:hover {
+    background-color: #218838;
+}
+
+/* Footer */
+footer {
+    background-color: #ffffff;
+    color: #3e6d2b;
+    text-align: center;
+    padding: 10px 0;
+    position: relative;
+    width: 100%;
+    bottom: 0;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header .logo {
+        font-size: 20px;
+    }
+
+    .search-bar {
+        width: 70%;
+    }
+
+    .navbar {
+        flex-direction: column;
+        padding: 15px 0;
+    }
+
+    .navbar a {
+        padding: 10px;
+    }
+
+    .container {
+        grid-template-columns: repeat(2, 1fr); /* 2 products per row in mobile view */
+        gap: 10px;
+    }
+
+    .product {
+        width: 150px; /* Reduce the width of products in mobile view */
+    }
+}

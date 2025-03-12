@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kutani Farm - Shop Fresh Products</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/StylesHome.css">
+    <style>
+        .notification {
+            position: fixed;
+            top: 140px;
+            left:69%;
+            transform: translateX(-50%);
+            background-color: #28a745;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 2px;
+            display: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-size: 12px;
+            z-index: 1000;
+        }
+
+        .no-products-message {
+            text-align: center;
+            padding: 20px;
+            font-size: 18px;
+            color: #d9534f;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Welcome Notification -->
+<div class="notification" id="welcomeNotification">
+    Selamat Datang, <span id="username"></span>!
+</div>
+
+<!-- Header Section -->
+<header class="d-flex justify-content-between align-items-center p-3">
+    <!-- Logo, hidden on small screens -->
+    <div class="logo d-none d-lg-block">
+        <a href="/public/HomePage.html">
+            <img src="/assets/images/LogoKutaniFarm.png" alt="Kutani Farm Logo" style="height: 30px;">
+        </a>
+    </div>
+    
+    <!-- Search Bar -->
+    <div class="search-bar w-100">
+        <input type="text" id="searchInput" placeholder="Search for fresh products..." class="form-control">
+        <button id="searchButton" class="btn btn-primary">Search</button>
+    </div>
+</header>
+
+<!-- Navbar Section -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand d-block d-lg-none" href="HomePage.html">
+            <img src="/assets/images/LogoKutaniFarm.png" alt="Kutani Farm Logo" style="height: 30px;">
+        </a>
+
+        <!-- Navbar Links (Centered) -->
+        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a href="HomePage.html" class="nav-link">Beranda</a>
+                </li>
+                <li class="nav-item">
+                    <a href="Produk.html" class="nav-link">Produk</a>
+                </li>
+                <li class="nav-item">
+                    <a href="TentangKami.html" class="nav-link">Tentang Kami</a>
+                </li>
+                <li class="nav-item">
+                    <a href="kontak.html" class="nav-link">Kontak</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Akun
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+                        <li><a href="account.html" class="dropdown-item">Detail Akun</a></li>
+                        <li><a href="cart.html" class="dropdown-item">Pesanan Saya</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Product Section -->
+<div class="container d-flex flex-wrap justify-content-center mt-5">
+    <!-- Products will be loaded here -->
+</div>
+
+<!-- Footer Section -->
+<footer class="text-center py-3">
+    <p>&copy; 2025 Kutani Farm. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+</footer>
+
+<!-- Firebase and JavaScript for showing the welcome message and products -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+    import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBrc8_nPdvVoJg99Fsi80NZLnt8LiBN3EI",
+        authDomain: "kutanifarm.firebaseapp.com",
+        projectId: "kutanifarm",
+        storageBucket: "kutanifarm.appspot.com",
+        messagingSenderId: "1063275158126",
+        appId: "1:1063275158126:web:8af2bc74da9db5c8e3a47f",
+        measurementId: "G-Z3TGPQJW2V"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let allProducts = [];
+
+    onAuthStateChanged(auth, (user) => {
+        const welcomeMessage = document.getElementById('welcomeNotification');
+        const usernameSpan = document.getElementById('username');
+        const profileLink = document.querySelector('.navbar .dropdown a');
+
+        if (user) {
+            usernameSpan.textContent = user.displayName || 'User';
+            welcomeMessage.style.display = 'block';
+
+            setTimeout(() => {
+                welcomeMessage.style.display = 'none';
+            }, 2000);
+
+            profileLink.textContent = 'Akun';
+            profileLink.href = 'profile.html';
+        } else {
+            usernameSpan.textContent = '';
+            welcomeMessage.style.display = 'none';
+            profileLink.textContent = 'Login';
+            profileLink.href = 'login.html';
+        }
+    });
+
+    const productContainer = document.querySelector('.container');
+    const productsRef = collection(db, 'products');
+
+    async function fetchProducts() {
+        try {
+            const querySnapshot = await getDocs(productsRef);
+            const products = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            if (products.length > 0) {
+                allProducts = products;
+                displayProducts(allProducts);
+            } else {
+                displayNoProductsMessage();
+            }
+        } catch (error) {
+            console.error("Error fetching products from Firestore: ", error);
+            displayNoProductsMessage();
+        }
+    }
+
+    function displayProducts(products) {
+        productContainer.innerHTML = '';
+        products.forEach(product => {
+            const productDiv = document.createElement('div');
+            productDiv.classList.add('product', 'col-md-4', 'mb-4');
+            productDiv.innerHTML = `
+                <div class="card">
+                    <img src="${product.imageUrl}" class="card-img-top" alt="${product.name}">
+                    <div class="card-body">
+                        <h5 class="card-title">${product.name}</h5>
+                        <p class="card-text">${product.description}</p>
+                        <div class="price">$${product.price}</div>
+                        <select id="quantity-${product.id}" class="form-select">
+                            <option value="100">100g</option>
+                            <option value="200">200g</option>
+                            <option value="500">500g</option>
+                            <option value="1000">1kg</option>
+                            <option value="2000">2kg</option>
+                            <option value="3000">3kg</option>
+                            <option value="5000">5kg</option>
+                            <option value="10000">10kg</option>
+                        </select>
+                        <button class="btn btn-primary mt-2" onclick="addToCart('${product.id}')">Add to Cart</button>
+                    </div>
+                </div>
+            `;
+            productContainer.appendChild(productDiv);
+        });
+    }
+
+    function displayNoProductsMessage() {
+        productContainer.innerHTML = '';
+        const noProductsMessage = document.createElement('div');
+        noProductsMessage.classList.add('no-products-message');
+        noProductsMessage.innerHTML = `<h3>Produk yang Anda cari tidak ada</h3>`;
+        productContainer.appendChild(noProductsMessage);
+    }
+
+    window.addToCart = async function(productId) {
+        const user = auth.currentUser;
+        if (!user) {
+            alert("Please log in to add products to your cart.");
+            return;
+        }
+
+        const quantitySelect = document.getElementById(`quantity-${productId}`);
+        const selectedQuantity = parseInt(quantitySelect.value);
+
+        const product = allProducts.find(p => p.id === productId);
+        if (product) {
+            const orderDate = new Date().toISOString();
+            const ordererName = user.displayName;
+            const phoneNumber = prompt("Please enter your phone number:");
+            const address = prompt("Please enter your address:");
+            const status = "pending"; // Set the initial status to 'pending'
+
+            // Calculate the total price based on the quantity selected
+            const totalPrice = (selectedQuantity / 1000) * product.price;
+
+            try {
+                const cartRef = doc(db, 'carts', user.uid);
+                const cartDoc = await getDoc(cartRef);
+
+                const cartItem = {
+                    userId: user.uid,
+                    productName: product.name,
+                    quantity: selectedQuantity,
+                    price: product.price, // Add the product price here
+                    totalPrice: totalPrice, // Add the total price for this item
+                    address: address,
+                    phoneNumber: phoneNumber,
+                    ordererName: ordererName,
+                    status: status,
+                    orderDate: orderDate,
+                };
+
+                if (cartDoc.exists()) {
+                    const cartData = cartDoc.data();
+                    cartData.products.push(cartItem);
+                    await updateDoc(cartRef, { products: cartData.products });
+                } else {
+                    await setDoc(cartRef, { products: [cartItem] });
+                }
+
+                // Show a notification with the price
+                alert(`${product.name} (${selectedQuantity / 1000} kg) has been added to your cart! Total: $${totalPrice.toFixed(2)}`);
+            } catch (error) {
+                console.error("Error adding product to cart: ", error);
+                alert("Failed to add product to cart.");
+            }
+        }
+    }
+
+    fetchProducts();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

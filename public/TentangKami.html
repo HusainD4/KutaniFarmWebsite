@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tentang Kami - Kutani Farm</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/assets/css/StylesHome.css" />
+    <style>
+      /* Custom Styles */
+      .section-container {
+        margin: 20px 0;
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border: 1px solid #ddd;
+      }
+
+      .section-header {
+        font-size: 28px;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .section-content {
+        font-size: 18px;
+        color: #34495e;
+        line-height: 1.6;
+      }
+
+      .section ul {
+        list-style-type: none;
+        padding-left: 0;
+        font-size: 18px;
+        color: #34495e;
+      }
+
+      .section ul li {
+        margin-bottom: 8px;
+      }
+
+      .row > .col-md-6 {
+        padding: 15px;
+      }
+
+      footer {
+        background-color: #f8f9fa;
+        padding: 20px;
+        text-align: center;
+        margin-top: 20px;
+      }
+      /* Custom Styles */
+      .section-container {
+        margin: 20px 0;
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border: 1px solid #ddd;
+      }
+
+      .section-header {
+        font-size: 28px;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .section-content {
+        font-size: 18px;
+        color: #34495e;
+        line-height: 1.6;
+        text-align: justify; /* Justify text */
+      }
+
+      .section ul {
+        list-style-type: none;
+        padding-left: 0;
+        font-size: 18px;
+        color: #34495e;
+        text-align: justify; /* Justify text */
+      }
+
+      .section ul li {
+        margin-bottom: 8px;
+      }
+
+      .row > .col-md-6 {
+        padding: 15px;
+      }
+
+      footer {
+        background-color: #f8f9fa;
+        padding: 20px;
+        text-align: center;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Header Section -->
+    <header class="d-flex justify-content-center align-items-center p-3">
+      <!-- Logo, hidden on small screens -->
+      <div class="logo d-none d-lg-block">
+        <a href="/public/HomePage.html">
+          <img
+            src="/assets/images/LogoKutaniFarm.png"
+            alt="Kutani Farm Logo"
+            style="height: 35px"
+          />
+        </a>
+      </div>
+    </header>
+
+    <!-- Navbar Section -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <!-- Logo Section for Mobile Devices (Visible on small screens) -->
+        <a class="navbar-brand d-block d-lg-none" href="HomePage.html">
+          <img
+            src="/assets/images/LogoKutaniFarm.png"
+            alt="Kutani Farm Logo"
+            style="height: 50px"
+          />
+        </a>
+
+        <!-- Navbar Toggler for small screens -->
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar Links (Centered) -->
+        <div
+          class="collapse navbar-collapse justify-content-center"
+          id="navbarNav"
+        >
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a href="HomePage.html" class="nav-link">Beranda</a>
+            </li>
+            <li class="nav-item">
+              <a href="Produk.html" class="nav-link">Produk</a>
+            </li>
+            <li class="nav-item">
+              <a href="TentangKami.html" class="nav-link">Tentang Kami</a>
+            </li>
+            <li class="nav-item">
+              <a href="kontak.html" class="nav-link">Kontak</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                href="#"
+                class="nav-link dropdown-toggle"
+                id="profileDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Akun
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+                <li>
+                  <a href="account.html" class="dropdown-item">Detail Akun</a>
+                </li>
+                <li>
+                  <a href="cart.html" class="dropdown-item">Pesanan Saya</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- About Us Section -->
+    <div class="container mt-5" style="max-width: 900px; margin: 0 auto">
+      <div class="section-container">
+        <h2 class="section-header">Tentang Kami</h2>
+        <hr />
+        <p class="section-content">
+          <span style="color: green;"><b>Kutani Farm</b></span> berdiri pada tahun 2021 di Megamendung, Bogor. Saat ini
+          kami mengelola lahan seluas 12 hektar lahan luar dan Green House ±
+          5.400 m². Berlokasi di kawasan sentra agro di wilayah Pakancilan, dan
+          memiliki packing house, menjadikan Kutani Farm sangat tepat dijadikan
+          partner dalam pemenuhan kebutuhan akan sayur segar terbaik.
+        </p>
+        <p class="section-content">
+          Kutani Farm berpengalaman menghasilkan produksi sayuran yang
+          berkelanjutan (continue) dan memiliki standar kualitas tinggi serta
+          jadwal pengiriman berkala.
+        </p>
+      </div>
+    </div>
+
+    <!-- Split Section: Produk Unggulan to Values -->
+    <div class="container mt-5" style="max-width: 900px; margin: 0 auto">
+      <div class="row">
+        <!-- Left Column -->
+        <div class="col-md-6">
+          <!-- Produk Unggulan Section -->
+          <div class="section-container">
+            <h3 class="section-header">Produk Unggulan</h3>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Produk</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>Paprika</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>Tomat Beef & Cherry</td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>Edamame</td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>Wortel Lokal</td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td>Aneka Cabai</td>
+                </tr>
+                <tr>
+                  <td>6</td>
+                  <td>Baby Pakcoy</td>
+                </tr>
+                <tr>
+                  <td>7</td>
+                  <td>Lettuce Head</td>
+                </tr>
+                <tr>
+                  <td>8</td>
+                  <td>Sawi Putih</td>
+                </tr>
+                <tr>
+                  <td>9</td>
+                  <td>Daun Bawang Besar</td>
+                </tr>
+                <tr>
+                  <td>10</td>
+                  <td>Brokoli</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Objective Section -->
+          <div class="section-container">
+            <h3 class="section-header">Objective</h3>
+            <p class="section-content">
+              <strong>Senyum Petani Semangat Kami..</strong><br />
+              CV Tunas Agro Madani melalui Kutani Farm berkomitmen menjadi
+              bagian dalam membangkitkan semangat para petani, khususnya petani
+              muda yang ada di sekitar kami untuk menjadi bagian dari kolaborasi
+              dan sinergi demi terciptanya ekosistem pertanian yang sustainable.
+            </p>
+            <p class="section-content">
+              Faktanya, 75% tim yang ada di Kutani Farm dibawah usia 30 tahun.
+              Dengan gelora muda ini, menjadikan Kutani Farm siap menjadi bagian
+              dari kesuksesan Bisnis Anda.
+            </p>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-md-6">
+          <!-- Vision and Mission Section -->
+          <div class="section-container">
+            <h3 class="section-header">Visi</h3>
+            <p class="section-content">
+              Menjadi perusahaan terkemuka sebagai penghasil sayur dan buah yang
+              memberi manfaat pada petani.
+            </p>
+
+            <h3 class="section-header">Misi</h3>
+            <ul>
+              <li>
+                Merancang pola budidaya sesuai kalender tanam termasuk kepada
+                Mitra.
+              </li>
+              <li>
+                Menjalankan usaha dengan pelayanan profesional dan berprinsip
+                pada Agro 4.0.
+              </li>
+              <li>Komitmen pada kualitas dan kuantitas produksi.</li>
+            </ul>
+          </div>
+
+          <!-- Company Values Section -->
+          <div class="section-container">
+            <h3 class="section-header">Nilai-Nilai Perusahaan</h3>
+            <ul>
+              <li><strong>T</strong>rusted: Etos kerja yang amanah.</li>
+              <li><strong>O</strong>penminded: Selalu berinovasi.</li>
+              <li><strong>P</strong>rofesional: Berikan yang terbaik.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+      <p>&copy; 2025 Kutani Farm. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+  </body>
+</html>
