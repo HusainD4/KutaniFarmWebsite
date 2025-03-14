@@ -1,704 +1,433 @@
-  <!DOCTYPE html>
-  <html lang="id">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-      <title>SayurFresh - Toko Sayuran Online</title>
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SayurFresh - Toko Sayuran Online</title>
 
-      <!-- Link ke Bootstrap CSS -->
-      <link
-        href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-        rel="stylesheet"
+    <!-- Link ke Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+  </head>
+
+  <body>
+    <!-- Welcome Notification -->
+    <div class="notification" id="welcomeNotification">
+      Selamat Datang, <span id="username"></span>!
+    </div>
+
+    <!-- Header Section -->
+    <header class="d-flex justify-content-between align-items-center p-3">
+      <div class="header-logo">
+        <a href="/index.html">
+          <img
+            src="/assets/images/LogoKutaniFarm.png"
+            alt="Kutani Farm Logo"
+            style="height: 45px"
+          />
+        </a>
+      </div>
+
+      <div class="search-bar w-50">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search for fresh products..."
+          class="form-control"
+        />
+        <button id="searchButton" class="btn btn-primary">Search</button>
+      </div>
+    </header>
+    <!-- Navbar Section -->
+
+    <nav
+      class="navbar navbar-expand-lg navbar-light bg-danger-subtle"
+      style="padding-bottom: 0px; padding-top: 30px"
+    >
+      <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">
+          <img
+            src="/assets/images/LogoKutaniFarm.png"
+            alt="Kutani Farm Logo"
+            style="height: 40px"
+          />
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a href="index.html" class="nav-link">Beranda</a>
+            </li>
+            <li class="nav-item">
+              <a href="public/Produk.html" class="nav-link">Produk</a>
+            </li>
+            <li class="nav-item">
+              <a href="public/TentangKami.html" class="nav-link"
+                >Tentang Kami</a
+              >
+            </li>
+            <li class="nav-item">
+              <a href="public/kontak.html" class="nav-link">Kontak</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                href="#"
+                class="nav-link dropdown-toggle"
+                id="profileDropdown"
+                role="button"
+                data-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Akun
+              </a>
+              <ul
+                class="dropdown-menu dropdown-menu-right"
+                aria-labelledby="profileDropdown"
+              >
+                <li>
+                  <a href="public/account.html" class="dropdown-item"
+                    >Detail Akun</a
+                  >
+                </li>
+                <li>
+                  <a href="keranjang.html" class="dropdown-item"
+                    >Pesanan Saya</a
+                  >
+                </li>
+                <li>
+                  <a href="#" class="dropdown-item" id="logoutBtn">Logout</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <hr
+      style="
+        border: 0;
+        border-top: 3px solid #28a745;
+        width: 100%;
+        margin: 20px auto;
+        margin-top: 40px;
+      "
+    />
+
+    <!-- Promo Banner - Carousel -->
+    <div id="promoCarousel" class="carousel slide" data-ride="carousel">
+      <ol class="carousel-indicators">
+        <li data-target="#promoCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#promoCarousel" data-slide-to="1"></li>
+        <li data-target="#promoCarousel" data-slide-to="2"></li>
+      </ol>
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img
+            src="/assets/images/banner2.png"
+            class="d-block w-100"
+            alt="Promo 1"
+          />
+          <div class="carousel-caption d-none d-md-block">
+            <h5>Diskon 30% Untuk Semua Sayuran!</h5>
+            <p>
+              Belanja sayuran segar dan dapatkan diskon menarik hanya di
+              SayurFresh!
+            </p>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <img
+            src="/assets/images/banner1.png"
+            class="d-block w-100"
+            alt="Promo 2"
+          />
+          <div class="carousel-caption d-none d-md-block">
+            <h5>Gratis Ongkir untuk Pembelian Di Atas Rp 100.000</h5>
+            <p>
+              Nikmati gratis ongkos kirim untuk semua pesanan lebih dari Rp
+              100.000!
+            </p>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <img
+            src="/assets/images/banner3.png"
+            class="d-block w-100"
+            alt="Promo 3"
+          />
+          <div class="carousel-caption d-none d-md-block">
+            <h5>Sayur Organik Segar Langsung Dari Petani</h5>
+            <p>Belanja langsung dari petani dengan kualitas terbaik!</p>
+          </div>
+        </div>
+      </div>
+      <a
+        class="carousel-control-prev"
+        href="#promoCarousel"
+        role="button"
+        data-slide="prev"
+      >
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a
+        class="carousel-control-next"
+        href="#promoCarousel"
+        role="button"
+        data-slide="next"
+      >
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mt-5">
+      <hr
+        style="
+          border: 0;
+          border-top: 3px solid #28a745;
+          width: 50%;
+          margin: 20px auto;
+          margin-top: 40px;
+        "
+      />
+      <h2
+        class="text-center mb-4"
+        style="
+          font-size: 2.5rem;
+          font-weight: bold;
+          background: linear-gradient(45deg, #6dbb3c, #28a745);
+          color: transparent;
+          background-clip: text;
+          -webkit-background-clip: text;
+          text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          font-family: 'Verdana', sans-serif;
+        "
+      >
+        Produk Sayuran Segar
+      </h2>
+      <hr
+        style="
+          border: 0;
+          border-top: 3px solid #28a745;
+          width: 50%;
+          margin: 20px auto;
+          margin-bottom: 40px;
+        "
       />
 
-      <style>
-        /* General Styles */
-        body {
-          font-family: Arial, sans-serif;
-          background-color: #ffffff;
-          margin: 0;
-          padding: 0;
-        }
+      <div class="row" id="product-list">
+        <!-- Produk akan dimuat di sini -->
+      </div>
+    </div>
+    <!-- Promo Section -->
+    <div class="promo-section">
+      <div class="divider"></div>
+      <!-- White Divider -->
+      <div class="promo-text" style="padding-bottom: 10px">
+        Semua Produk Yang Kami Sediakan Pasti Berkualitas
+      </div>
+      <!-- Running Sponsor Section -->
+      <div class="sponsor-marquee" style="padding-bottom: 40px">
+        <div class="sponsor-images">
+          <img src="/assets/images/baby-pokcoy.png" alt="Sponsor 1" />
+          <img src="/assets/images/brokoli.png" alt="Sponsor 2" />
+          <img src="/assets/images/buncis-kenya.png" alt="Sponsor 3" />
+          <img src="/assets/images/cabai.png" alt="Sponsor 4" />
+          <img src="/assets/images/daun-bawang.png" alt="Sponsor 5" />
+          <img src="/assets/images/horenzo.png" alt="Sponsor 6" />
+          <img src="/assets/images/jagung-manis.png" alt="Sponsor 6" />
+          <img src="/assets/images/kacang-edamame.png" alt="Sponsor 6" />
+          <img src="/assets/images/lettuce-head.png" alt="Sponsor 6" />
+          <img src="/assets/images/lobak.png" alt="Sponsor 6" />
+          <img src="/assets/images/baby-pokcoy.png" alt="Sponsor 1" />
+          <img src="/assets/images/brokoli.png" alt="Sponsor 2" />
+          <img src="/assets/images/buncis-kenya.png" alt="Sponsor 3" />
+          <img src="/assets/images/cabai.png" alt="Sponsor 4" />
+          <img src="/assets/images/daun-bawang.png" alt="Sponsor 5" />
+          <img src="/assets/images/horenzo.png" alt="Sponsor 6" />
+          <img src="/assets/images/jagung-manis.png" alt="Sponsor 6" />
+          <img src="/assets/images/kacang-edamame.png" alt="Sponsor 6" />
+          <img src="/assets/images/lettuce-head.png" alt="Sponsor 6" />
+          <img src="/assets/images/lobak.png" alt="Sponsor 6" />
+          <img src="/assets/images/baby-pokcoy.png" alt="Sponsor 1" />
+          <img src="/assets/images/brokoli.png" alt="Sponsor 2" />
+          <img src="/assets/images/buncis-kenya.png" alt="Sponsor 3" />
+          <img src="/assets/images/cabai.png" alt="Sponsor 4" />
+          <img src="/assets/images/daun-bawang.png" alt="Sponsor 5" />
+          <img src="/assets/images/horenzo.png" alt="Sponsor 6" />
+          <img src="/assets/images/jagung-manis.png" alt="Sponsor 6" />
+          <img src="/assets/images/kacang-edamame.png" alt="Sponsor 6" />
+          <img src="/assets/images/lettuce-head.png" alt="Sponsor 6" />
+          <img src="/assets/images/lobak.png" alt="Sponsor 6" />
+          <img src="/assets/images/baby-pokcoy.png" alt="Sponsor 1" />
+          <img src="/assets/images/brokoli.png" alt="Sponsor 2" />
+          <img src="/assets/images/buncis-kenya.png" alt="Sponsor 3" />
+          <img src="/assets/images/cabai.png" alt="Sponsor 4" />
+          <img src="/assets/images/daun-bawang.png" alt="Sponsor 5" />
+          <img src="/assets/images/horenzo.png" alt="Sponsor 6" />
+          <img src="/assets/images/jagung-manis.png" alt="Sponsor 6" />
+          <img src="/assets/images/kacang-edamame.png" alt="Sponsor 6" />
+          <img src="/assets/images/lettuce-head.png" alt="Sponsor 6" />
+          <img src="/assets/images/lobak.png" alt="Sponsor 6" />
+          <!-- Add more sponsors as needed -->
+        </div>
+      </div>
+    </div>
+    <!-- Footer -->
+    <footer
+      style="
+        background: #333;
+        color: white;
+        padding: 40px 0;
+        text-align: center;
+        font-family: Arial, sans-serif;
+      "
+    >
+      <div>
+        <!-- Title Section -->
+        <h3
+          style="
+            font-size: 2rem;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #f1f1f1;
+          "
+        >
+          SayurFresh
+        </h3>
+        <p style="font-size: 1.2rem; margin-bottom: 25px; color: #bbb">
+          Toko Sayuran Segar Online Anda
+        </p>
 
-        header {
-          background-color: #ffffff;
-          color: white;
-          text-align: center;
+        <!-- Social Media Links -->
+        <div>
+          <a
+            href="#"
+            style="
+              color: #ddd;
+              margin: 0 20px;
+              font-size: 1.8rem;
+              text-decoration: none;
+              transition: color 0.3s ease;
+            "
+          >
+            <i class="fab fa-facebook-square"></i>
+          </a>
+          <a
+            href="#"
+            style="
+              color: #ddd;
+              margin: 0 20px;
+              font-size: 1.8rem;
+              text-decoration: none;
+              transition: color 0.3s ease;
+            "
+          >
+            <i class="fab fa-twitter-square"></i>
+          </a>
+          <a
+            href="#"
+            style="
+              color: #ddd;
+              margin: 0 20px;
+              font-size: 1.8rem;
+              text-decoration: none;
+              transition: color 0.3s ease;
+            "
+          >
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a
+            href="#"
+            style="
+              color: #ddd;
+              margin: 0 20px;
+              font-size: 1.8rem;
+              text-decoration: none;
+              transition: color 0.3s ease;
+            "
+          >
+            <i class="fab fa-youtube"></i>
+          </a>
+        </div>
 
-        }
+        <!-- Footer Bottom Text -->
+        <p style="margin-top: 25px; font-size: 1rem; color: #bbb">
+          &copy; 2025 SayurFresh. Semua hak cipta dilindungi.
+        </p>
+      </div>
+    </footer>
 
-        footer {
-          background-color: #333;
-          color: white;
-          text-align: center;
-          padding: 100px;
-        }
+    <!-- Include Font Awesome for social icons -->
+    <!-- Font Awesome CDN -->
+    <script
+      src="https://kit.fontawesome.com/a076d05399.js"
+      crossorigin="anonymous"
+    ></script>
 
-        /* Navbar */
-        .navbar {
-          background-color: #ffffff;
-          transition: all 0.3s ease;
+    <script>
+      // Fungsi untuk menampilkan notifikasi
+      function showNotification(message, backgroundColor = "#28a745") {
+        const notification = document.getElementById("welcomeNotification");
+        notification.textContent = message;
+        notification.style.backgroundColor = backgroundColor;
+        notification.style.display = "block";
 
-          
-        }
-
-        .navbar-brand img {
-          height: 30px;
-        }
-
-        .navbar-nav .nav-link {
-          color: #28a745;
-          
-        }
-
-        .navbar-nav .nav-link:hover {
-          color: #218838;
-          transition: all 0.3s ease;
-
-
-        }
-
-        /* Search Bar */
-        .search-bar {
-          display: flex;
-          justify-content: right;
-          align-items: end;
-          margin-top: -10px;
-          margin-bottom: -10px;
-        }
-
-        .search-bar input {
-          width: 70%;
-          padding: 10px;
-          font-size: 16px;
-          border: 1px solid #ced4da;
-          border-radius: 25px 0 0 25px;
-          outline: none;
-          transition: all 0.3s ease;
-        }
-
-        .search-bar input:focus {
-          border-color: #28a745;
-          box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
-        }
-
-        .search-bar button {
-          padding: 10px 20px;
-          font-size: 16px;
-          background-color: #28a745;
-          color: white;
-          border: none;
-          border-radius: 0 25px 25px 0;
-          cursor: pointer;
-          transition: all 0.3s ease;
-        }
-
-        .search-bar button:hover {
-          background-color: #218838;
-          box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
-
-        }
-
-        /* Product Cards */
-        .product-card {
-          margin-bottom: 30px;
-        }
-
-        .product-img {
-          max-height: 200px;
-          object-fit: cover;
-        }
-
-        .price {
-          font-size: 1.2em;
-          color: #28a745;
-          font-weight: bold;
-        }
-
-        .product-quantity {
-          margin-top: 10px;
-        }
-
-        .product-quantity select {
-          width: 100%;
-        }
-
-        /* Notification */
-        .notification {
-          position: fixed;
-          top: 140px;
-          left: 69%;
-          transform: translateX(-50%);
-          background-color: #28a745;
-          color: white;
-          padding: 3px 10px;
-          border-radius: 2px;
-          display: none;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-          font-size: 12px;
-          z-index: 1000;
-        }
-      </style>
-
-      <style>
-        /* Carousel */
-        .carousel-item img {
-          width: 100%;
-          height: 400px;
-          object-fit: cover;
-        }
-
-        .carousel-caption {
-          background-color: rgba(0, 0, 0, 0.5);
-          padding: 20px;
-          border-radius: 5px;
-        }
-      </style>
-
-      <style>
-        /* Promo Section */
-        .promo-section {
-          position: relative;
-          background-color: #28a745;
-          color: white;
-          text-align: center;
-          padding: 90px 0;
-          margin: 50px 0;
-        }
-
-        .promo-section .divider {
-          position: absolute;
-          top: 50%;
-          left: 0;
-          width: 100%;
-          height: 2px;
-          background-color: white;
-          transform: translateY(-50%);
-        }
-
-        .promo-section .promo-text {
-          font-size: 1.5rem;
-          font-weight: bold;
-          z-index: 1; /* To ensure the text is on top of the divider */
-        }
-
-        .promo-section .btn-view-products {
-          margin-top: 20px;
-          padding: 10px 20px;
-          font-size: 1rem;
-          background-color: white;
-          color: #28a745;
-          border: none;
-          border-radius: 25px;
-          text-transform: uppercase;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
-        }
-
-        .promo-section .btn-view-products:hover {
-          background-color: #218838;
-          color: white;
-        }
-      </style>
-
-      <style>
-        /* Marquee Sponsor Section */
-        .sponsor-marquee {
-          width: 100%;
-          overflow: hidden;
-          background-color: #28a745;
-          padding: 10px 0;
-        }
-
-        .sponsor-marquee .sponsor-images {
-          display: flex;
-          animation: scrollSponsors 20s linear infinite;
-        }
-
-        .sponsor-marquee img {
-          width: 100px; /* Small image size */
-          margin: 0 20px;
-        }
-
-        /* Marquee animation */
-        @keyframes scrollSponsors {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-      </style>
-
-      <style>
-        /* Responsive Breakpoints */
-        @media (max-width: 575.98px) {
-          .search-bar {
-      display: flex !important;
-      justify-content: space-between !important;
-      align-items: center !important;
-      width: 100vw !important;
-  }
-
-      .search-bar input {
-          flex: 1; /* Agar input menyesuaikan sisa ruang */
-          min-width: 0; /* Mencegah input melebar melebihi parent */
+        // Menyembunyikan notifikasi setelah 3 detik
+        setTimeout(() => {
+          notification.style.display = "none";
+        }, 3000);
       }
 
-      .search-bar button {
-          white-space: nowrap; /* Mencegah tombol mengecil */
-      }  
+      const firebaseConfig = {
+        apiKey: "AIzaSyBrc8_nPdvVoJg99Fsi80NZLnt8LiBN3EI",
+        authDomain: "kutanifarm.firebaseapp.com",
+        projectId: "kutanifarm",
+        storageBucket: "kutanifarm.appspot.com",
+        messagingSenderId: "1063275158126",
+        appId: "1:1063275158126:web:8af2bc74da9db5c8e3a47f",
+        measurementId: "G-Z3TGPQJW2V",
+      };
 
+      // Inisialisasi Firebase
+      const app = firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+      const auth = firebase.auth();
 
-          .navbar-nav {
-            text-align: start;
-          }
+      // Fungsi untuk memuat produk
+      async function loadProducts() {
+        const productList = document.getElementById("product-list");
 
+        try {
+          const querySnapshot = await db.collection("products").get();
 
-          .navbar-nav .nav-link {
-            padding: 10px;
-            font-size: 16px;
-          }
-
-          .navbar-nav .dropdown-menu {
-            width: 100%;
-            text-align: center;
-          }
-
-          /* Logo in Header */
-          .header-logo {
-            display: none;
-          }
-
-          .navbar-brand img {
-            display: block;
-          }
-        }
-
-        @media (min-width: 576px) {
-          .navbar-nav {
-            display: flex;
-            justify-content: center;
-          }
-
-          .navbar-nav .nav-link {
-            padding: 10px 15px;
-          }
-
-          .navbar-nav .dropdown-menu {
-            min-width: 180px;
-          }
-
-          .header-logo {
-            display: block;
-          }
-
-          .navbar-brand img {
-            display: none;
-          }
-        }
-
-        @media (min-width: 992px) {
-          .search-bar input {
-            width: 70%;
-            justify-content: right;
-            
-          }
-
-          .navbar-nav .nav-link {
-            padding: 10px 20px;
-          }
-
-          .product-card {
-            width: 30%;
-          }
-
-          .product-img {
-            max-height: 250px;
-          }
-        }
-
-        @media (min-width: 1200px) {
-          .search-bar input {
-            width: 50%;
-            justify-content: right;
-
-          }
-
-          .navbar-nav .nav-link {
-            padding: 10px 20px;
-          }
-
-          .product-card {
-            width: 25%;
-          }
-
-          .product-img {
-            max-height: 300px;
-          }
-        }
-      </style>
-      <style>
-        /* Responsive adjustments using media queries */
-        @media (max-width: 768px) {
-          .promo-section {
-            padding: 15px;
-          }
-
-          .promo-section img {
-            max-width: 90%; /* Image width adjusts on smaller devices */
-          }
-
-          .promo-section h3 {
-            font-size: 1.2em; /* Smaller text for smaller screens */
-          }
-
-          .promo-section p {
-            font-size: 0.9em; /* Smaller text for smaller screens */
-          }
-        }
-
-        @media (max-width: 576px) {
-          .promo-section {
-            padding: 10px;
-          }
-          .promo-section img {
-            max-width: 100%; /* Image width adjusts on smaller devices */
-          }
-
-          .promo-section h3 {
-            font-size: 1em;
-          }
-
-          .promo-section p {
-            font-size: 0.8em;
-          }
-        }
-      </style>
-
-      <!-- Firebase SDK -->
-      <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-      <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-      <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-      <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
-    </head>
-
-    <body>
-      <!-- Welcome Notification -->
-      <div class="notification" id="welcomeNotification">
-        Selamat Datang, <span id="username"></span>!
-      </div>
-
-      <!-- Header Section -->
-      <header class="d-flex justify-content-between align-items-center p-3">
-        <div class="header-logo">
-          <a href="/public/HomePage.html">
-            <img
-              src="/assets/images/LogoKutaniFarm.png"
-              alt="Kutani Farm Logo"
-              style="height: 45px"
-            />
-          </a>
-        </div>
-
-        <div class="search-bar w-50">
-          <input
-            type="text"
-            id="searchInput"
-            placeholder="Search for fresh products..."
-            class="form-control"
-          />
-          <button id="searchButton" class="btn btn-primary">Search</button>
-        </div>
-      </header>
-      <!-- Navbar Section -->
-      
-      <nav
-        class="navbar navbar-expand-lg navbar-light bg-danger-subtle"
-        style="padding-bottom: 0px; padding-top: 30px"
-      >
-        <div class="container-fluid">
-          <a class="navbar-brand" href="index.html">
-            <img
-              src="/assets/images/LogoKutaniFarm.png"
-              alt="Kutani Farm Logo"
-              style="height: 40px"
-            />
-          </a>
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-toggle="collapse"
-            data-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-              <li class="nav-item">
-                <a href="index.html" class="nav-link">Beranda</a>
-              </li>
-              <li class="nav-item">
-                <a href="public/Produk.html" class="nav-link">Produk</a>
-              </li>
-              <li class="nav-item">
-                <a href="public/TentangKami.html" class="nav-link">Tentang Kami</a>
-              </li>
-              <li class="nav-item">
-                <a href="public/kontak.html" class="nav-link">Kontak</a>
-              </li>
-              <li class="nav-item dropdown">
-                <a
-                  href="#"
-                  class="nav-link dropdown-toggle"
-                  id="profileDropdown"
-                  role="button"
-                  data-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Akun
-                </a>
-                <ul
-                  class="dropdown-menu dropdown-menu-right"
-                  aria-labelledby="profileDropdown"
-                >
-                  <li>
-                    <a href="public/account.html" class="dropdown-item">Detail Akun</a>
-                  </li>
-                  <li>
-                    <a href="keranjang.html" class="dropdown-item"
-                      >Pesanan Saya</a
-                    >
-                  </li>
-                  <li>
-                    <a href="#" class="dropdown-item" id="logoutBtn">Logout</a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-      <hr style="border: 0; border-top: 3px solid #28a745; width: 100%; margin: 20px auto; margin-top: 40px;">
-
-
-      <!-- Promo Banner - Carousel -->
-      <div id="promoCarousel" class="carousel slide" data-ride="carousel">
-        <ol class="carousel-indicators">
-          <li data-target="#promoCarousel" data-slide-to="0" class="active"></li>
-          <li data-target="#promoCarousel" data-slide-to="1"></li>
-          <li data-target="#promoCarousel" data-slide-to="2"></li>
-        </ol>
-        <div class="carousel-inner">
-          <div class="carousel-item active">
-            <img
-              src="/assets/images/banner2.png"
-              class="d-block w-100"
-              alt="Promo 1"
-            />
-            <div class="carousel-caption d-none d-md-block">
-              <h5>Diskon 30% Untuk Semua Sayuran!</h5>
-              <p>
-                Belanja sayuran segar dan dapatkan diskon menarik hanya di
-                SayurFresh!
-              </p>
-            </div>
-          </div>
-          <div class="carousel-item">
-            <img
-              src="/assets/images/banner1.png"
-              class="d-block w-100"
-              alt="Promo 2"
-            />
-            <div class="carousel-caption d-none d-md-block">
-              <h5>Gratis Ongkir untuk Pembelian Di Atas Rp 100.000</h5>
-              <p>
-                Nikmati gratis ongkos kirim untuk semua pesanan lebih dari Rp
-                100.000!
-              </p>
-            </div>
-          </div>
-          <div class="carousel-item">
-            <img
-              src="/assets/images/banner3.png"
-              class="d-block w-100"
-              alt="Promo 3"
-            />
-            <div class="carousel-caption d-none d-md-block">
-              <h5>Sayur Organik Segar Langsung Dari Petani</h5>
-              <p>Belanja langsung dari petani dengan kualitas terbaik!</p>
-            </div>
-          </div>
-        </div>
-        <a
-          class="carousel-control-prev"
-          href="#promoCarousel"
-          role="button"
-          data-slide="prev"
-        >
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="sr-only">Previous</span>
-        </a>
-        <a
-          class="carousel-control-next"
-          href="#promoCarousel"
-          role="button"
-          data-slide="next"
-        >
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="sr-only">Next</span>
-        </a>
-      </div>
-
-
-
-      <!-- Main Content -->
-      <div class="container mt-5">
-          <hr style="border: 0; border-top: 3px solid #28a745; width: 50%; margin: 20px auto; margin-top: 40px;">
-          <h2 class="text-center mb-4" style="font-size: 2.5rem; font-weight: bold; background: linear-gradient(45deg, #6dbb3c, #28a745); color: transparent; background-clip: text; -webkit-background-clip: text; text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2); letter-spacing: 1px; text-transform: uppercase; font-family: 'Verdana', sans-serif;">
-              Produk Sayuran Segar
-            </h2>
-            <hr style="border: 0; border-top: 3px solid #28a745; width: 50%; margin: 20px auto; margin-bottom: 40px;">
-            
-            
-        <div class="row" id="product-list">
-          <!-- Produk akan dimuat di sini -->
-        </div>
-      </div>
-      <!-- Promo Section -->
-      <div class="promo-section">
-          <div class="divider"></div>
-          <!-- White Divider -->
-          <div class="promo-text" style="padding-bottom: 10px">
-            Semua Produk Yang Kami Sediakan Pasti Berkualitas
-          </div>
-          <!-- Running Sponsor Section -->
-          <div class="sponsor-marquee" style="padding-bottom: 40px">
-            <div class="sponsor-images">
-              <img src="/assets/images/baby-pokcoy.png" alt="Sponsor 1" />
-              <img src="/assets/images/brokoli.png" alt="Sponsor 2" />
-              <img src="/assets/images/buncis-kenya.png" alt="Sponsor 3" />
-              <img src="/assets/images/cabai.png" alt="Sponsor 4" />
-              <img src="/assets/images/daun-bawang.png" alt="Sponsor 5" />
-              <img src="/assets/images/horenzo.png" alt="Sponsor 6" />
-              <img src="/assets/images/jagung-manis.png" alt="Sponsor 6" />
-              <img src="/assets/images/kacang-edamame.png" alt="Sponsor 6" />
-              <img src="/assets/images/lettuce-head.png" alt="Sponsor 6" />
-              <img src="/assets/images/lobak.png" alt="Sponsor 6" />
-              <img src="/assets/images/baby-pokcoy.png" alt="Sponsor 1" />
-              <img src="/assets/images/brokoli.png" alt="Sponsor 2" />
-              <img src="/assets/images/buncis-kenya.png" alt="Sponsor 3" />
-              <img src="/assets/images/cabai.png" alt="Sponsor 4" />
-              <img src="/assets/images/daun-bawang.png" alt="Sponsor 5" />
-              <img src="/assets/images/horenzo.png" alt="Sponsor 6" />
-              <img src="/assets/images/jagung-manis.png" alt="Sponsor 6" />
-              <img src="/assets/images/kacang-edamame.png" alt="Sponsor 6" />
-              <img src="/assets/images/lettuce-head.png" alt="Sponsor 6" />
-              <img src="/assets/images/lobak.png" alt="Sponsor 6" />
-              <img src="/assets/images/baby-pokcoy.png" alt="Sponsor 1" />
-              <img src="/assets/images/brokoli.png" alt="Sponsor 2" />
-              <img src="/assets/images/buncis-kenya.png" alt="Sponsor 3" />
-              <img src="/assets/images/cabai.png" alt="Sponsor 4" />
-              <img src="/assets/images/daun-bawang.png" alt="Sponsor 5" />
-              <img src="/assets/images/horenzo.png" alt="Sponsor 6" />
-              <img src="/assets/images/jagung-manis.png" alt="Sponsor 6" />
-              <img src="/assets/images/kacang-edamame.png" alt="Sponsor 6" />
-              <img src="/assets/images/lettuce-head.png" alt="Sponsor 6" />
-              <img src="/assets/images/lobak.png" alt="Sponsor 6" />
-              <img src="/assets/images/baby-pokcoy.png" alt="Sponsor 1" />
-              <img src="/assets/images/brokoli.png" alt="Sponsor 2" />
-              <img src="/assets/images/buncis-kenya.png" alt="Sponsor 3" />
-              <img src="/assets/images/cabai.png" alt="Sponsor 4" />
-              <img src="/assets/images/daun-bawang.png" alt="Sponsor 5" />
-              <img src="/assets/images/horenzo.png" alt="Sponsor 6" />
-              <img src="/assets/images/jagung-manis.png" alt="Sponsor 6" />
-              <img src="/assets/images/kacang-edamame.png" alt="Sponsor 6" />
-              <img src="/assets/images/lettuce-head.png" alt="Sponsor 6" />
-              <img src="/assets/images/lobak.png" alt="Sponsor 6" />
-              <!-- Add more sponsors as needed -->
-            </div>
-          </div>
-        </div>
-      <!-- Footer -->
-      <footer style="background: #333; color: white; padding: 40px 0; text-align: center; font-family: Arial, sans-serif;">
-          <div>
-              <!-- Title Section -->
-              <h3 style="font-size: 2rem; margin-bottom: 15px; font-weight: bold; color: #f1f1f1;">SayurFresh</h3>
-              <p style="font-size: 1.2rem; margin-bottom: 25px; color: #bbb;">Toko Sayuran Segar Online Anda</p>
-              
-              <!-- Social Media Links -->
-              <div>
-                  <a href="#" style="color: #ddd; margin: 0 20px; font-size: 1.8rem; text-decoration: none; transition: color 0.3s ease;">
-                      <i class="fab fa-facebook-square"></i>
-                  </a>
-                  <a href="#" style="color: #ddd; margin: 0 20px; font-size: 1.8rem; text-decoration: none; transition: color 0.3s ease;">
-                      <i class="fab fa-twitter-square"></i>
-                  </a>
-                  <a href="#" style="color: #ddd; margin: 0 20px; font-size: 1.8rem; text-decoration: none; transition: color 0.3s ease;">
-                      <i class="fab fa-instagram"></i>
-                  </a>
-                  <a href="#" style="color: #ddd; margin: 0 20px; font-size: 1.8rem; text-decoration: none; transition: color 0.3s ease;">
-                      <i class="fab fa-youtube"></i>
-                  </a>
-              </div>
-              
-              <!-- Footer Bottom Text -->
-              <p style="margin-top: 25px; font-size: 1rem; color: #bbb;">&copy; 2025 SayurFresh. Semua hak cipta dilindungi.</p>
-          </div>
-      </footer>
-      
-      <!-- Include Font Awesome for social icons -->
-      <!-- Font Awesome CDN -->
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-
-      
-      
-
-      <script>
-        // Fungsi untuk menampilkan notifikasi
-        function showNotification(message, backgroundColor = "#28a745") {
-          const notification = document.getElementById("welcomeNotification");
-          notification.textContent = message;
-          notification.style.backgroundColor = backgroundColor;
-          notification.style.display = "block";
-
-          // Menyembunyikan notifikasi setelah 3 detik
-          setTimeout(() => {
-            notification.style.display = "none";
-          }, 3000);
-        }
-
-        const firebaseConfig = {
-          apiKey: "AIzaSyBrc8_nPdvVoJg99Fsi80NZLnt8LiBN3EI",
-          authDomain: "kutanifarm.firebaseapp.com",
-          projectId: "kutanifarm",
-          storageBucket: "kutanifarm.appspot.com",
-          messagingSenderId: "1063275158126",
-          appId: "1:1063275158126:web:8af2bc74da9db5c8e3a47f",
-          measurementId: "G-Z3TGPQJW2V",
-        };
-
-        // Inisialisasi Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const auth = firebase.auth();
-
-        // Fungsi untuk memuat produk
-        async function loadProducts() {
-          const productList = document.getElementById("product-list");
-
-          try {
-            const querySnapshot = await db.collection("products").get();
-
-            querySnapshot.forEach((doc) => {
-              const product = doc.data();
-              const productId = doc.id;
-              const productHTML = `
+          querySnapshot.forEach((doc) => {
+            const product = doc.data();
+            const productId = doc.id;
+            const productHTML = `
                 <div class="col-md-4 product-card">
                   <div class="card">
                     <img src="${product.imageUrl}" alt="${product.name}" class="card-img-top product-img">
@@ -726,74 +455,74 @@
                   </div>
                 </div>
               `;
-              productList.innerHTML += productHTML;
-            });
-          } catch (error) {
-            console.error("Error getting products:", error);
-            showNotification(
-              "Gagal memuat produk. Cek koneksi internet Anda.",
-              "#dc3545"
-            );
-          }
+            productList.innerHTML += productHTML;
+          });
+        } catch (error) {
+          console.error("Error getting products:", error);
+          showNotification(
+            "Gagal memuat produk. Cek koneksi internet Anda.",
+            "#dc3545"
+          );
         }
+      }
 
-        // Fungsi untuk menambahkan produk ke keranjang
-        function addToCart(productId, productName, productPrice) {
-          const quantity = document.getElementById(`quantity-${productId}`).value;
-          const user = firebase.auth().currentUser;
+      // Fungsi untuk menambahkan produk ke keranjang
+      function addToCart(productId, productName, productPrice) {
+        const quantity = document.getElementById(`quantity-${productId}`).value;
+        const user = firebase.auth().currentUser;
 
-          if (user) {
-            const cartRef = db.collection("carts").doc(user.uid);
+        if (user) {
+          const cartRef = db.collection("carts").doc(user.uid);
 
-            cartRef.get().then((doc) => {
-              let cartItems = doc.exists ? doc.data().items : [];
-              const existingItemIndex = cartItems.findIndex(
-                (item) => item.productId === productId
-              );
-
-              if (existingItemIndex > -1) {
-                cartItems[existingItemIndex].quantity += parseInt(quantity);
-                cartItems[existingItemIndex].totalPrice =
-                  cartItems[existingItemIndex].quantity *
-                  cartItems[existingItemIndex].productPrice;
-              } else {
-                cartItems.push({
-                  productId,
-                  productName,
-                  productPrice,
-                  quantity: parseInt(quantity),
-                  totalPrice: productPrice * quantity,
-                  userName: user.displayName,
-                });
-              }
-
-              cartRef
-                .set({ items: cartItems })
-                .then(() => {
-                  showNotification("Produk berhasil ditambahkan ke keranjang!");
-                })
-                .catch((error) => {
-                  console.error("Error adding to cart: ", error);
-                  showNotification(
-                    "Terjadi kesalahan saat menambahkan produk ke keranjang.",
-                    "#dc3545"
-                  );
-                });
-            });
-          } else {
-            showNotification(
-              "Anda harus login untuk menambahkan produk ke keranjang.",
-              "#17a2b8"
+          cartRef.get().then((doc) => {
+            let cartItems = doc.exists ? doc.data().items : [];
+            const existingItemIndex = cartItems.findIndex(
+              (item) => item.productId === productId
             );
-          }
-        }
 
-        // Panggil loadProducts saat halaman dimuat
-        loadProducts();
-      </script>
-      <!-- Link ke Bootstrap JS dan jQuery -->
-      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    </body>
-  </html>
+            if (existingItemIndex > -1) {
+              cartItems[existingItemIndex].quantity += parseInt(quantity);
+              cartItems[existingItemIndex].totalPrice =
+                cartItems[existingItemIndex].quantity *
+                cartItems[existingItemIndex].productPrice;
+            } else {
+              cartItems.push({
+                productId,
+                productName,
+                productPrice,
+                quantity: parseInt(quantity),
+                totalPrice: productPrice * quantity,
+                userName: user.displayName,
+              });
+            }
+
+            cartRef
+              .set({ items: cartItems })
+              .then(() => {
+                showNotification("Produk berhasil ditambahkan ke keranjang!");
+              })
+              .catch((error) => {
+                console.error("Error adding to cart: ", error);
+                showNotification(
+                  "Terjadi kesalahan saat menambahkan produk ke keranjang.",
+                  "#dc3545"
+                );
+              });
+          });
+        } else {
+          showNotification(
+            "Anda harus login untuk menambahkan produk ke keranjang.",
+            "#17a2b8"
+          );
+        }
+      }
+
+      // Panggil loadProducts saat halaman dimuat
+      loadProducts();
+    </script>
+    <!-- Link ke Bootstrap JS dan jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Checkout - SayurFresh</title>
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <header class="d-flex justify-content-between align-items-center p-3">
+      <div class="header-logo">
+        <a href="/index.html">
+          <img src="/assets/images/LogoKutaniFarm.png" alt="Kutani Farm Logo" style="height: 45px" />
+        </a>
+      </div>
+    </header>
+
+    <h2 class="text-center mb-4">Checkout Produk</h2>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6" id="product-details"></div>
+        <div class="col-md-6">
+          <h4>Informasi Pembeli</h4>
+          <form id="checkoutForm">
+            <div class="form-group">
+              <label for="name">Nama Lengkap</label>
+              <input type="text" id="name" class="form-control" required />
+            </div>
+            <div class="form-group">
+              <label for="address">Alamat Pengiriman</label>
+              <input type="text" id="address" class="form-control" required />
+            </div>
+            <div class="form-group">
+              <label for="phone">Nomor Telepon</label>
+              <input type="text" id="phone" class="form-control" required />
+            </div>
+            <button type="submit" class="btn btn-success">Lanjutkan ke Pembayaran</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 SayurFresh. Semua hak cipta dilindungi.</p>
+    </footer>
+
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const productId = urlParams.get("productId");
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyBrc8_nPdvVoJg99Fsi80NZLnt8LiBN3EI",
+        authDomain: "kutanifarm.firebaseapp.com",
+        projectId: "kutanifarm",
+        storageBucket: "kutanifarm.appspot.com",
+        messagingSenderId: "1063275158126",
+        appId: "1:1063275158126:web:8af2bc74da9db5c8e3a47f",
+        measurementId: "G-Z3TGPQJW2V",
+      };
+
+      const app = firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+
+      async function loadProductDetails() {
+        const productDetails = document.getElementById("product-details");
+
+        try {
+          const doc = await db.collection("products").doc(productId).get();
+          const product = doc.data();
+
+          const productHTML = `
+            <h4>${product.name}</h4>
+            <p>${product.description}</p>
+            <p class="price">Rp ${product.price}</p>
+          `;
+          productDetails.innerHTML = productHTML;
+        } catch (error) {
+          console.error("Gagal memuat detail produk:", error);
+        }
+      }
+
+      loadProductDetails();
+
+      document.getElementById("checkoutForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+        alert("Pemesanan berhasil. Anda akan diarahkan ke pembayaran.");
+        window.location.href = "payment.html";
+      });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

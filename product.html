@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Produk - SayurFresh</title>
+
+    <!-- Link ke Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  </head>
+
+  <body>
+    <header class="d-flex justify-content-between align-items-center p-3">
+      <div class="header-logo">
+        <a href="/index.html">
+          <img src="/assets/images/LogoKutaniFarm.png" alt="Kutani Farm Logo" style="height: 45px" />
+        </a>
+      </div>
+      <div class="search-bar w-50">
+        <input type="text" id="searchInput" placeholder="Cari produk..." class="form-control" />
+        <button id="searchButton" class="btn btn-primary">Cari</button>
+      </div>
+    </header>
+
+    <h2 class="text-center mb-4">Daftar Produk Sayuran Segar</h2>
+    <div class="container">
+      <div class="row" id="product-list"></div>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 SayurFresh. Semua hak cipta dilindungi.</p>
+    </footer>
+
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyBrc8_nPdvVoJg99Fsi80NZLnt8LiBN3EI",
+        authDomain: "kutanifarm.firebaseapp.com",
+        projectId: "kutanifarm",
+        storageBucket: "kutanifarm.appspot.com",
+        messagingSenderId: "1063275158126",
+        appId: "1:1063275158126:web:8af2bc74da9db5c8e3a47f",
+        measurementId: "G-Z3TGPQJW2V",
+      };
+
+      const app = firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+
+      async function loadProducts() {
+        const productList = document.getElementById("product-list");
+
+        try {
+          const querySnapshot = await db.collection("products").get();
+          querySnapshot.forEach((doc) => {
+            const product = doc.data();
+            const productHTML = `
+              <div class="col-md-4">
+                <div class="card">
+                  <img src="${product.imageUrl}" alt="${product.name}" class="card-img-top" />
+                  <div class="card-body">
+                    <h5 class="card-title">${product.name}</h5>
+                    <p class="card-text">${product.description}</p>
+                    <p class="price">Rp ${product.price}</p>
+                    <a href="checkout.html?productId=${doc.id}" class="btn btn-success">Beli</a>
+                  </div>
+                </div>
+              </div>
+            `;
+            productList.innerHTML += productHTML;
+          });
+        } catch (error) {
+          console.error("Gagal memuat produk:", error);
+        }
+      }
+
+      loadProducts();
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

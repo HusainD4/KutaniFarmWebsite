@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Pembayaran - SayurFresh</title>
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <header class="d-flex justify-content-between align-items-center p-3">
+      <div class="header-logo">
+        <a href="/index.html">
+          <img src="/assets/images/LogoKutaniFarm.png" alt="Kutani Farm Logo" style="height: 45px" />
+        </a>
+      </div>
+    </header>
+
+    <h2 class="text-center mb-4">Metode Pembayaran</h2>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h4>Pilih Metode Pembayaran</h4>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="paymentMethod" id="paymentCOD" value="COD" />
+            <label class="form-check-label" for="paymentCOD">
+              Bayar di Tempat (COD)
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="paymentMethod" id="paymentBank" value="Bank Transfer" />
+            <label class="form-check-label" for="paymentBank">
+              Transfer Bank
+            </label>
+          </div>
+          <button class="btn btn-success mt-3" id="payButton">Lanjutkan Pembayaran</button>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 SayurFresh. Semua hak cipta dilindungi.</p>
+    </footer>
+
+    <script>
+      document.getElementById("payButton").addEventListener("click", function () {
+        const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+        if (paymentMethod) {
+          alert(`Pembayaran menggunakan ${paymentMethod.value} berhasil dipilih.`);
+          window.location.href = "detailtransaksi.html";
+        } else {
+          alert("Silakan pilih metode pembayaran.");
+        }
+      });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>
